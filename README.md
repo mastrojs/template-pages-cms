@@ -15,11 +15,7 @@ Finally, you'll also want to [Publish your website to GitHub Pages](https://mast
 
 ### Deploy to a subdirectory (e.g. GitHub Pages)
 
-If your site is at a URL like `https://my-name.github.io/my-repo` you'll want to adjust the `generate` command in [`deno.json`](./deno.json) to:
-
-    BASEPATH='/my-repo' deno run -A @mastrojs/mastro/generator
-
-and the media section [`.pages.yml`](./.pages.yml) to:
+If your site is at a URL like `https://my-name.github.io/my-repo` you'll want to adjust the media section [`.pages.yml`](./.pages.yml) to:
 
 ```yaml
 media:
@@ -27,7 +23,7 @@ media:
   output: /my-repo/media
 ```
 
-Replace `my-repo` in both cases with your actual repository name.
+where `my-repo` is your actual repository name.
 
 
 ## Run locally

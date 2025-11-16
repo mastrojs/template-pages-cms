@@ -1,8 +1,10 @@
 import { type Html, html } from "@mastrojs/mastro";
-import process from "node:process";
 
-// In case you're not hosting this in the web root but e.g. on `https://my-name.github.io/my-repo`
-export const basePath = process.env.BASEPATH || "";
+// If you're not hosting your website on the root (e.g `https://my-name.github.io`), but
+// instead in a sub-directory (common with GitHub Pages: `https://my-name.github.io/my-repo`),
+// then you need to prefix all links that start with a slash with `basePath`,
+// like we're doing below with `href=${basePath + "/styles.css"}`.
+export const basePath = await ghPagesBasePath();
 
 interface Props {
   children: Html;
@@ -16,12 +18,7 @@ export const Layout = (props: Props) =>
       <head>
         <meta charset="UTF-8">
         <title>${props.title}</title>
-        ${basePath
-          // Take care of relative links not starting with a slash
-          ? html`<base href=${basePath + "/"}>`
-          : ""}
-        ${// Absolute links starting with a slash need to be prefixed with `basePath`
-          html`<link rel="stylesheet" href=${basePath + "/styles.css"}>`}
+        <link rel="stylesheet" href=${basePath + "/styles.css"}>
       </head>
       <body>
         <h1>${props.title}</h1>
@@ -29,3 +26,15 @@ export const Layout = (props: Props) =>
       </body>
     </html>
   `;
+
+async function ghPagesBasePath() {
+  if (typeof window === "undefined") {
+    const process = await import("node:process");
+    // see https://docs.github.com/en/actions/reference/workflows-and-actions/variables
+    const repo = process.env.GITHUB_REPOSITORY?.split("/")[1];
+    if (repo && !repo.endsWith(".github.io")) {
+      return "/" + repo;
+    }
+  }
+  return "";
+}
